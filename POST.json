@@ -1,0 +1,15 @@
+{
+    "name": "daryl",
+    "email": "daryl@daryl.com",
+    "deliveryDate": "2023-02-18",
+    "lineItems": [
+        {
+            "item": "Milo",
+            "quantity": 1
+        },
+        {
+            "item": "Orange",
+            "quantity": 2
+        }
+    ]
+}
