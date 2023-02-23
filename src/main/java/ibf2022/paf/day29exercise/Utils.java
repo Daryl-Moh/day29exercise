@@ -1,9 +1,11 @@
-package ibf2022.paf.day29exercise.service;
+package ibf2022.paf.day29exercise;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
+
+import org.bson.Document;
 
 import ibf2022.paf.day29exercise.model.LineItem;
 import ibf2022.paf.day29exercise.model.Order;
@@ -20,39 +22,61 @@ public class Utils {
         return jsonReader.readObject();
     }
 
+    public static Document toDocument(LineItem lineItem) {
+        Document doc = new Document();
+        doc.put("item", lineItem.getItem());
+        doc.put("quantity", lineItem.getQuantity());
+        return doc;
+    }
+
+    public static Document toDocument(Order order) {
+        Document doc = new Document();
+        doc.put("orderId", order.getOrderId());
+        doc.put("name", order.getName());
+        doc.put("email", order.getEmail());
+		doc.put("deliveryDate", order.getDeliveryDate());
+
+        List<Document> docs = order.getLineItems()
+            .stream()
+            .map(v -> toDocument(v))
+            .toList();
+
+        doc.put("lineItems", docs);
+        return doc;
+    }
+
     public static JsonObject toJson(Order order) {
 
         // this will hold the line items
         JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
-        order.getItems()
+        order.getLineItems()
             .stream()
             .map(v -> toJson(v))
             .forEach(v -> {
                 arrBuilder.add(v);
             });
 
-        JsonObject json = Json.createObjectBuilder()
+        return Json.createObjectBuilder()
+            .add("orderID", order.getOrderId())
             .add("name", order.getName())
             .add("email", order.getEmail())
-            .add("deliveryDate", order.getDeliverDate().toString())
+            .add("deliveryDate", order.getDeliveryDate().toString())
             .add("lineItems", arrBuilder.build())
             .build();
-
-        return null;
 
     }
 
     public static JsonObject toJson(LineItem lineItem) {
         return Json.createObjectBuilder()
-            .add("item", lineItem.getItemName())
-            .add("quantity", lineItem.getItemQuantity())
+            .add("item", lineItem.getItem())
+            .add("quantity", lineItem.getQuantity())
             .build();
     }
 
     public static LineItem toLineItem(JsonObject json) {
         LineItem lineItem = new LineItem();
-        lineItem.setItemName(json.getString("item"));
-        lineItem.setItemQuantity(json.getInt("quantity"));
+        lineItem.setItem(json.getString("item"));
+        lineItem.setQuantity(json.getInt("quantity"));
         return lineItem;
     }
 
@@ -61,7 +85,7 @@ public class Utils {
         order.setName("name");
         order.setEmail("email");
         // to do formatting for date
-        order.setDeliverDate(new Date());
+        order.setDeliveryDate(new Date());
         ;
 
         List<LineItem> lineItems = json.getJsonArray("lineItems")
@@ -70,7 +94,7 @@ public class Utils {
                 .map((v -> toLineItem(v)))
                 .toList();
 
-        order.setItems(lineItems);
+        order.setLineItems(lineItems);
         return order;
     }
 }
