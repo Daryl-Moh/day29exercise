@@ -82,8 +82,8 @@ public class Utils {
 
     public static Order toOrder(JsonObject json) {
         Order order = new Order();
-        order.setName("name");
-        order.setEmail("email");
+        order.setName(json.getString("name"));
+        order.setEmail(json.getString("email"));
         // to do formatting for date
         order.setDeliveryDate(new Date());
         ;
