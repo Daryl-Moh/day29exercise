@@ -28,11 +28,17 @@ public class OrderController {
         System.out.printf(">>> Payload: %s\n", payload);
 
         // from JSON (data interchange format) -> Order (domain entity)
+        // Takes in the payload (String) and uses Utils.toJson to get a JsonObject
         JsonObject json = Utils.toJson(payload);
+
+        // Takes in the JsonObject and uses Utils.toOrder to create the Order domain entity
         Order order = Utils.toOrder(json);
 
+        // Passes Order domain entity to the order service and gets back a unique ID
+        // It also calls the repo to insert into Mongo
         String orderId =orderSvc.insertOrder(order);
 
+        // Create the response, append orderId send back to the request
         JsonObject resp = Json.createObjectBuilder()
             .add("orderId", orderId)
             .add("message", "Created")

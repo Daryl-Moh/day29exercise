@@ -16,6 +16,7 @@ public class OrderRepository {
     private MongoTemplate template;
 
     public void insertOrder(Order order) {
+        // Calls on Utils.toDocument to take the Order entity and converts it to document for inserting
         Document doc = Utils.toDocument(order);
         template.insert(doc, Constants.COLLECTION_PURCHASE_ORDER);
     }

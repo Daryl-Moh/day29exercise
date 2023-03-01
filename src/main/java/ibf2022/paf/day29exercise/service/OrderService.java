@@ -15,10 +15,11 @@ public class OrderService {
     private OrderRepository orderRepo;
 
     public String insertOrder(Order order) {
+        // Creates the unique ID for each order
         String orderId = UUID.randomUUID().toString().substring(0, 8);
         order.setOrderId(orderId);
 
-        // Save to mongo
+        // Save to mongoDB
         orderRepo.insertOrder(order);
 
         return orderId;
